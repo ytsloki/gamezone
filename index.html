@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameZone — Jogos Grátis</title>
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;600;700;800;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#080b11;--surf:#0d1117;--card:#111622;--card2:#151c2a;
+  --bdr:#ffffff0c;--bdr2:#ffffff18;
+  --red:#e8414f;--redg:#e8414f35;
+  --cyan:#22d3ee;--grn:#22c55e;--amb:#f59e0b;--pur:#a855f7;--blue:#3b82f6;--pink:#f472b6;
+  --ng:#f7941e;--itch:#fa5c5c;
+  --tx:#f1f5f9;--mt:#64748b;--mt2:#94a3b8;
+  --f:'Exo 2',sans-serif;--f2:'Inter',sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--bg);color:var(--tx);display:flex;min-height:100vh;overflow-x:hidden}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#ffffff14;border-radius:3px}
+
+.sb{width:210px;min-height:100vh;background:var(--surf);border-right:1px solid var(--bdr);position:fixed;top:0;left:0;z-index:200;display:flex;flex-direction:column;overflow-y:auto}
+.sb-logo{padding:16px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr)}
+.sb-mark{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--red),#ff8c00);display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 4px 16px var(--redg);flex-shrink:0}
+.sb-name{font-size:17px;font-weight:900;background:linear-gradient(90deg,#fff,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.sb-sub{font-size:9px;color:var(--mt);font-family:var(--f2);margin-top:1px}
+.sb-lbl{padding:13px 14px 4px;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:2px;color:#2d3748}
+.sb-a{display:flex;align-items:center;gap:8px;padding:7px 10px;margin:1px 5px;border-radius:7px;font-size:12px;font-weight:700;color:var(--mt2);cursor:pointer;transition:all .12s}
+.sb-a:hover{background:#ffffff08;color:#fff}
+.sb-a.on{background:linear-gradient(90deg,#e8414f18,transparent);color:#fff;border-left:2px solid var(--red);margin-left:3px}
+.sb-ic{font-size:13px;width:18px;text-align:center}
+.sb-bx{margin-left:auto;font-size:9px;font-weight:800;padding:2px 6px;border-radius:20px;background:var(--red);color:#fff}
+.sb-bx.g{background:var(--grn)}
+.sb-bx.o{background:var(--ng)}
+
+.main{margin-left:210px;flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+.tb{background:var(--surf);border-bottom:1px solid var(--bdr);padding:0 18px;height:50px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:100}
+.srch{flex:0 0 220px;position:relative}
+.srch input{width:100%;background:#060810;border:1.5px solid var(--bdr2);border-radius:8px;padding:7px 12px 7px 30px;color:var(--tx);font-family:var(--f2);font-size:12.5px;font-weight:500;outline:none;transition:border .2s,box-shadow .2s}
+.srch input:focus{border-color:var(--red);box-shadow:0 0 0 3px var(--redg)}
+.srch input::placeholder{color:#2d3748}
+.si{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:#2d3748;font-size:12px;pointer-events:none}
+.cbar{display:flex;gap:4px;overflow-x:auto;flex:1;scrollbar-width:none;padding:2px 0}
+.cbar::-webkit-scrollbar{display:none}
+.chip{background:transparent;border:1.5px solid var(--bdr);color:var(--mt2);font-family:var(--f);font-size:10.5px;font-weight:700;padding:4px 10px;border-radius:20px;cursor:pointer;transition:all .12s;white-space:nowrap;flex-shrink:0}
+.chip:hover,.chip.on{background:var(--red);border-color:var(--red);color:#fff}
+
+.pg{padding:18px;flex:1}
+
+.hero{background:var(--card);border:1px solid var(--bdr);border-radius:14px;padding:22px 26px;margin-bottom:20px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-60px;right:-30px;width:240px;height:240px;background:radial-gradient(circle,#e8414f0e,transparent 65%);pointer-events:none}
+.htag{display:inline-flex;gap:5px;background:#ffffff07;border:1px solid #ffffff10;border-radius:20px;padding:3px 11px;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:var(--amb);margin-bottom:9px}
+.hero h1{font-size:22px;font-weight:900;line-height:1.2;margin-bottom:6px}
+.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--red),#ff8c00);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hero p{font-family:var(--f2);font-size:11.5px;color:var(--mt2);line-height:1.6;max-width:620px;margin-bottom:14px}
+.src-badges{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.src-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;font-family:var(--f2)}
+.src-io{background:#3b82f620;color:#93c5fd;border:1px solid #3b82f630}
+.src-ng{background:#f7941e20;color:#fcd34d;border:1px solid #f7941e30}
+.src-it{background:#fa5c5c20;color:#fca5a5;border:1px solid #fa5c5c30}
+.src-cm{background:#22c55e20;color:#86efac;border:1px solid #22c55e30}
+.hstats{display:flex;gap:18px;padding-top:12px;border-top:1px solid var(--bdr)}
+.hn{font-size:17px;font-weight:900}.hl{font-size:9px;color:var(--mt);font-family:var(--f2);margin-top:1px}
+
+.sec{margin-bottom:26px;animation:fu .35s ease both}
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.st{font-size:14px;font-weight:900;display:flex;align-items:center;gap:7px}
+.bar{width:3px;height:14px;border-radius:3px;flex-shrink:0}
+.cnt{font-size:10px;font-family:var(--f2);color:var(--mt)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:9px}
+
+.gc{background:var(--card);border:1px solid var(--bdr);border-radius:10px;overflow:hidden;cursor:pointer;transition:transform .14s,box-shadow .14s,border-color .14s;text-decoration:none;display:flex;flex-direction:column;position:relative}
+.gc:hover{transform:translateY(-3px);box-shadow:0 12px 30px #00000055;border-color:var(--bdr2)}
+.gc:hover .pov{opacity:1}
+.gc:hover .gi{transform:scale(1.06)}
+.gt{position:relative;overflow:hidden;background:var(--card2);aspect-ratio:16/9;flex-shrink:0}
+.gi{width:100%;height:100%;object-fit:cover;display:block;transition:transform .26s;position:relative;z-index:2}
+.gt::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,#ffffff04,transparent);background-size:200% 100%;animation:shim 1.8s infinite;pointer-events:none;z-index:1}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.pov{position:absolute;inset:0;background:linear-gradient(to top,#000000a8,transparent 55%);opacity:0;transition:opacity .16s;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;z-index:3}
+.pb{background:var(--red);color:#fff;font-family:var(--f);font-size:10.5px;font-weight:800;border:none;border-radius:6px;padding:5px 14px;cursor:pointer;box-shadow:0 3px 10px var(--redg)}
+.bdg{position:absolute;top:5px;left:5px;font-size:7.5px;font-weight:800;text-transform:uppercase;padding:2px 6px;border-radius:4px;backdrop-filter:blur(6px);z-index:4}
+.bh{background:#ef444480;color:#fecaca;border:1px solid #ef444420}
+.bn{background:#22c55e80;color:#bbf7d0;border:1px solid #22c55e20}
+.bt{background:#f59e0b80;color:#fde68a;border:1px solid #f59e0b20}
+.bm{background:#a855f780;color:#e9d5ff;border:1px solid #a855f720}
+/* Source badges on cards */
+.src{position:absolute;bottom:5px;right:5px;font-size:7px;font-weight:800;padding:1px 5px;border-radius:3px;backdrop-filter:blur(6px);z-index:4;text-transform:uppercase}
+.sng{background:#f7941e90;color:#fff}
+.sit{background:#fa5c5c90;color:#fff}
+.scm{background:#22c55e90;color:#fff}
+.sio{background:#3b82f690;color:#fff}
+
+.fv{position:absolute;top:5px;right:5px;width:21px;height:21px;border-radius:5px;background:#00000055;border:1px solid #ffffff10;display:flex;align-items:center;justify-content:center;font-size:10px;cursor:pointer;opacity:0;transition:opacity .14s;z-index:5}
+.gc:hover .fv{opacity:1}
+.fv.on{opacity:1;color:var(--red)}
+.cb{padding:7px 8px 9px;flex:1;display:flex;flex-direction:column;gap:4px}
+.ct{font-size:11px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cm{display:flex;align-items:center;justify-content:space-between}
+.tgs{display:flex;gap:2px;flex-wrap:wrap}
+.tg{background:#ffffff07;color:var(--mt);font-size:7px;font-weight:700;font-family:var(--f2);padding:1px 4px;border-radius:3px;text-transform:uppercase}
+.cr{font-size:9px;font-weight:800;font-family:var(--f2);color:var(--amb);white-space:nowrap}
+
+.empty{text-align:center;padding:50px 20px;color:var(--mt);font-family:var(--f2)}
+footer{border-top:1px solid var(--bdr);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;background:var(--surf);flex-wrap:wrap;gap:6px}
+.fl{font-size:11px;font-weight:700;color:var(--mt)}
+.fll{display:flex;gap:12px}
+.fll a{font-size:10px;font-family:var(--f2);color:var(--mt);text-decoration:none}
+.fll a:hover{color:var(--tx)}
+
+@keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(max-width:900px){.sb{display:none}.main{margin-left:0}}
+@media(max-width:600px){.pg{padding:10px}.tb{padding:0 10px}.srch{flex:0 0 150px}.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+
+<aside class="sb">
+  <div class="sb-logo">
+    <div class="sb-mark">🎮</div>
+    <div><div class="sb-name">GameZone</div><div class="sb-sub">500+ jogos · 3 fontes</div></div>
+  </div>
+  <div class="sb-lbl">Categorias</div>
+  <div class="sb-a on" data-c="all" onclick="fc(this)"><span class="sb-ic">🏠</span>Todos<span class="sb-bx" id="totBx">0</span></div>
+  <div class="sb-a" data-c="fps" onclick="fc(this)"><span class="sb-ic">🔫</span>FPS & Tiro</div>
+  <div class="sb-a" data-c="io"  onclick="fc(this)"><span class="sb-ic">🌐</span>Jogos .io</div>
+  <div class="sb-a" data-c="rpg" onclick="fc(this)"><span class="sb-ic">🗡️</span>RPG<span class="sb-bx o">NEW</span></div>
+  <div class="sb-a" data-c="aca" onclick="fc(this)"><span class="sb-ic">⚔️</span>Ação</div>
+  <div class="sb-a" data-c="plat" onclick="fc(this)"><span class="sb-ic">🏃</span>Plataforma</div>
+  <div class="sb-a" data-c="cor" onclick="fc(this)"><span class="sb-ic">🏎️</span>Corrida</div>
+  <div class="sb-a" data-c="cas" onclick="fc(this)"><span class="sb-ic">🎲</span>Casual</div>
+  <div class="sb-a" data-c="puz" onclick="fc(this)"><span class="sb-ic">🧩</span>Puzzle</div>
+  <div class="sb-a" data-c="hor" onclick="fc(this)"><span class="sb-ic">👻</span>Horror<span class="sb-bx o">NEW</span></div>
+  <div class="sb-a" data-c="adv" onclick="fc(this)"><span class="sb-ic">🗺️</span>Aventura<span class="sb-bx o">NEW</span></div>
+  <div class="sb-a" data-c="str" onclick="fc(this)"><span class="sb-ic">♟️</span>Estratégia</div>
+  <div class="sb-a" data-c="p2"  onclick="fc(this)"><span class="sb-ic">👥</span>2 Jogadores</div>
+  <div class="sb-a" data-c="pal" onclick="fc(this)"><span class="sb-ic">📝</span>Palavras</div>
+  <div class="sb-a" data-c="geo" onclick="fc(this)"><span class="sb-ic">🌍</span>Geografia</div>
+  <div class="sb-a" data-c="esp" onclick="fc(this)"><span class="sb-ic">⚽</span>Esportes</div>
+  <div class="sb-a" data-c="rit" onclick="fc(this)"><span class="sb-ic">🎵</span>Ritmo</div>
+  <div class="sb-a" data-c="idle" onclick="fc(this)"><span class="sb-ic">💰</span>Idle/Clicker</div>
+  <div class="sb-a" data-c="ret" onclick="fc(this)"><span class="sb-ic">👾</span>Retro Clássicos<span class="sb-bx o">NEW</span></div>
+  <div class="sb-lbl">Fontes</div>
+  <div class="sb-a" data-c="src_ng"  onclick="fc(this)"><span class="sb-ic">🟠</span>Newgrounds</div>
+  <div class="sb-a" data-c="src_itch" onclick="fc(this)"><span class="sb-ic">🔴</span>itch.io</div>
+  <div class="sb-a" data-c="src_cm"  onclick="fc(this)"><span class="sb-ic">🟢</span>CoolMath</div>
+  <div class="sb-a" data-c="src_io"  onclick="fc(this)"><span class="sb-ic">🔵</span>Sites .io</div>
+  <div class="sb-lbl">Conta</div>
+  <div class="sb-a" data-c="fav" onclick="fc(this)"><span class="sb-ic">❤️</span>Favoritos<span class="sb-bx g" id="favBx">0</span></div>
+</aside>
+
+<main class="main">
+  <div class="tb">
+    <div class="srch"><span class="si">🔍</span><input type="text" placeholder="Buscar por nome ou gênero..." id="q"></div>
+    <div class="cbar" id="cbar">
+      <button class="chip on" data-c="all">🎮 Todos</button>
+      <button class="chip" data-c="rpg">🗡️ RPG</button>
+      <button class="chip" data-c="fps">🔫 FPS</button>
+      <button class="chip" data-c="io">🌐 .io</button>
+      <button class="chip" data-c="aca">⚔️ Ação</button>
+      <button class="chip" data-c="plat">🏃 Plataforma</button>
+      <button class="chip" data-c="cor">🏎️ Corrida</button>
+      <button class="chip" data-c="cas">🎲 Casual</button>
+      <button class="chip" data-c="puz">🧩 Puzzle</button>
+      <button class="chip" data-c="hor">👻 Horror</button>
+      <button class="chip" data-c="adv">🗺️ Aventura</button>
+      <button class="chip" data-c="str">♟️ Estratégia</button>
+      <button class="chip" data-c="p2">👥 2P</button>
+      <button class="chip" data-c="pal">📝 Palavras</button>
+      <button class="chip" data-c="idle">💰 Idle</button>
+      <button class="chip" data-c="ret">👾 Retro</button>
+      <button class="chip" data-c="rit">🎵 Ritmo</button>
+    </div>
+  </div>
+
+  <div class="pg">
+    <div class="hero sec">
+      <div class="htag">✅ 500+ Jogos · 3 Fontes · 100% Jogáveis no Navegador</div>
+      <h1>O maior portal de jogos<br>que <em>funcionam no Chromebook</em></h1>
+      <p>Combinamos jogos de 3 fontes: sites .io próprios, Newgrounds e itch.io. Todos abrem direto no jogo — RPG, Horror, Aventura, Ação, Puzzle e muito mais. Sem CrazyGames, sem Poki.</p>
+      <div class="src-badges">
+        <span class="src-badge src-io">🔵 Sites .io oficiais</span>
+        <span class="src-badge src-ng">🟠 Newgrounds — clássicos do browser</span>
+        <span class="src-badge src-it">🔴 itch.io — jogos indie</span>
+        <span class="src-badge src-cm">🟢 CoolMathGames — escola-friendly</span>
+      </div>
+      <div class="hstats">
+        <div><div class="hn" id="hTot">500+</div><div class="hl">Jogos</div></div>
+        <div><div class="hn">4</div><div class="hl">Fontes</div></div>
+        <div><div class="hn">18</div><div class="hl">Categorias</div></div>
+        <div><div class="hn">Grátis</div><div class="hl">Todos</div></div>
+      </div>
+    </div>
+    <div id="gameGrid"></div>
+  </div>
+
+  <footer>
+    <span class="fl">🎮 GameZone · Newgrounds + itch.io + .io sites · Funciona no Chromebook</span>
+    <div class="fll"><a href="#">Sobre</a><a href="#">Contato</a></div>
+  </footer>
+</main>
+
+<script>
+// Helpers de imagem
+function p(h,s,e){return 'https://img.poki-cdn.com/cdn-cgi/image/q=78,width=280,height=158,fit=cover,f=auto/'+h+'/'+s+'.'+(e||'png');}
+function t(u){return 'https://image.thum.io/get/width=280&height=158/'+u;}
+function imgFail(el){var f=el.getAttribute('data-fb');if(f){el.removeAttribute('data-fb');el.src=f;}else{el.closest('.gt').style.background='#1a2035';el.style.display='none';}}
+
+// Fontes: 'io'=sites próprios, 'ng'=Newgrounds, 'itch'=itch.io, 'cm'=CoolMathGames
+// Formato: [id, nome, url, img, badge, [tags], categoria, rating, fonte]
+// badge: h=hot n=new t=top m=multi
+var G=[
+
+// ══════════════════════════════════════════════════════════════
+// RPG — maior categoria nova, vem das 3 fontes
+// ══════════════════════════════════════════════════════════════
+// Newgrounds RPG (portal/view = ID direto do jogo)
+['aq',    'AdventureQuest',        'https://www.battleon.com',                  t('https://www.battleon.com'),                         'h',['RPG','MMORPG'],'rpg','4.6','io'],
+['aqw',   'AdventureQuest Worlds', 'https://aq.com',                            t('https://aq.com'),                                   'h',['RPG','MMORPG'],'rpg','4.7','io'],
+['rune',  'RuneScape',             'https://www.runescape.com/play',            t('https://www.runescape.com'),                        't',['RPG','MMORPG'],'rpg','4.8','io'],
+['kol',   'Kingdom of Loathing',   'https://www.kingdomofloathing.com',         t('https://www.kingdomofloathing.com'),                 null,['RPG','Humor'],'rpg','4.5','io'],
+['isleward','Isleward',            'https://isleward.com',                      t('https://isleward.com'),                             'n',['RPG','Multi'],'rpg','4.4','io'],
+['advland','Adventure Land',       'https://adventure.land',                    t('https://adventure.land'),                           'n',['RPG','Code'],'rpg','4.5','io'],
+['wilds',  'Wilds.io',             'https://wilds.io',                          t('https://wilds.io'),                                 null,['RPG','.io'],'rpg','4.2','io'],
+['warspear','Warspear Online',     'https://warspearonline.com',                t('https://warspearonline.com'),                       null,['MMORPG'],'rpg','4.2','io'],
+// Newgrounds RPG clássicos
+['ng_fancy','Fancy Pants Adventure','https://www.newgrounds.com/portal/view/418929', t('https://www.newgrounds.com/portal/view/418929'), 'h',['Plat','RPG'],'rpg','4.6','ng'],
+['ng_wiz', 'Sonny',               'https://www.newgrounds.com/portal/view/399672', t('https://www.newgrounds.com/portal/view/399672'), 'h',['RPG','Turn'],'rpg','4.7','ng'],
+['ng_sonny2','Sonny 2',           'https://www.newgrounds.com/portal/view/462651', t('https://www.newgrounds.com/portal/view/462651'), 'h',['RPG','Turn'],'rpg','4.8','ng'],
+['ng_ether','Ether War',           'https://www.newgrounds.com/portal/view/446878', t('https://www.newgrounds.com/portal/view/446878'), null,['RPG','Strategy'],'rpg','4.3','ng'],
+['ng_epic', 'Epic Battle Fantasy 5','https://www.newgrounds.com/portal/view/739480',t('https://www.newgrounds.com/portal/view/739480'),'t',['RPG','Turn','JRPG'],'rpg','4.9','ng'],
+['ng_epbf4','Epic Battle Fantasy 4','https://www.newgrounds.com/portal/view/626431',t('https://www.newgrounds.com/portal/view/626431'),'h',['RPG','Turn'],'rpg','4.8','ng'],
+['ng_epbf3','Epic Battle Fantasy 3','https://www.newgrounds.com/portal/view/551610',t('https://www.newgrounds.com/portal/view/551610'),null,['RPG','Turn'],'rpg','4.7','ng'],
+['ng_castle','Castle Crashing the Beard','https://www.newgrounds.com/portal/view/551560',t('https://www.newgrounds.com/portal/view/551560'),null,['RPG','Ação'],'rpg','4.5','ng'],
+['ng_knightly','Knightfall: A Daring Journey','https://www.newgrounds.com/portal/view/607046',t('https://www.newgrounds.com/portal/view/607046'),null,['RPG','Puzzle'],'rpg','4.4','ng'],
+['ng_mardek','Mardek RPG Ch.1',   'https://www.newgrounds.com/portal/view/421861', t('https://www.newgrounds.com/portal/view/421861'), 'h',['RPG','JRPG'],'rpg','4.6','ng'],
+['ng_mardek2','Mardek RPG Ch.2',  'https://www.newgrounds.com/portal/view/488021', t('https://www.newgrounds.com/portal/view/488021'), 'h',['RPG','JRPG'],'rpg','4.7','ng'],
+['ng_mardek3','Mardek RPG Ch.3',  'https://www.newgrounds.com/portal/view/536970', t('https://www.newgrounds.com/portal/view/536970'), 'h',['RPG','JRPG'],'rpg','4.8','ng'],
+['ng_dungeon','Sinjid: Shadow of the Warrior','https://www.newgrounds.com/portal/view/553766',t('https://www.newgrounds.com/portal/view/553766'),null,['RPG','Ação'],'rpg','4.5','ng'],
+['ng_gemcraft','GemCraft Lost Chapter','https://www.newgrounds.com/portal/view/563455',t('https://www.newgrounds.com/portal/view/563455'),'h',['RPG','TD'],'rpg','4.7','ng'],
+['ng_rogue','Rouge Soul',          'https://www.newgrounds.com/portal/view/612396', t('https://www.newgrounds.com/portal/view/612396'), null,['RPG','Roguelike'],'rpg','4.4','ng'],
+['ng_rogue2','Rogue Soul 2',       'https://www.newgrounds.com/portal/view/629795', t('https://www.newgrounds.com/portal/view/629795'), null,['RPG','Roguelike'],'rpg','4.5','ng'],
+['ng_dungeon2','Desktop Dungeons', 'https://www.newgrounds.com/portal/view/546914',t('https://www.newgrounds.com/portal/view/546914'),'t',['RPG','Dungeon'],'rpg','4.8','ng'],
+['ng_realm','Realm of the Mad God', 'https://www.realmofthemadgod.com',          t('https://www.realmofthemadgod.com'),                 'h',['RPG','MMORPG','Bullet'],'rpg','4.5','io'],
+// itch.io RPG
+['itch_vsurv','Vampire Survivors (demo)','https://poncle.itch.io/vampire-survivors',t('https://poncle.itch.io/vampire-survivors'),'t',['RPG','Roguelike','Survivor'],'rpg','4.9','itch'],
+['itch_dind', 'Die in the Dungeon CLASSIC','https://alarts.itch.io/die-in-the-dungeon',t('https://alarts.itch.io/die-in-the-dungeon'),'h',['RPG','Deckbuilder','Roguelike'],'rpg','4.8','itch'],
+['itch_10min','10 Minutes Till Dawn','https://flanne.itch.io/10-minutes-till-dawn',t('https://flanne.itch.io/10-minutes-till-dawn'),'h',['RPG','Survivor','Action'],'rpg','4.7','itch'],
+['itch_mobs', 'MOBS INC',          'https://torahhorse.itch.io/mobsinc',         t('https://torahhorse.itch.io/mobsinc'),               'n',['RPG','Idle'],'rpg','4.6','itch'],
+['itch_poke', 'Pokemon Overlord',  'https://aetheris.itch.io/pokemon-overlord',  t('https://aetheris.itch.io/pokemon-overlord'),        'n',['RPG','Pokemon'],'rpg','4.5','itch'],
+['itch_runiestory','RunieStory',   'https://runiestory.itch.io/runiestory',       t('https://runiestory.itch.io/runiestory'),            'n',['RPG','GB','Pixel'],'rpg','4.6','itch'],
+['itch_globeba','Globeba',         'https://dragonite.itch.io/globeba',           t('https://dragonite.itch.io/globeba'),               null,['RPG','Action'],'rpg','4.4','itch'],
+['itch_wayfarer','Wayfarer',       'https://wayfarergame.itch.io/wayfarer',       t('https://wayfarergame.itch.io/wayfarer'),           'n',['RPG','Dark','Fantasy'],'rpg','4.7','itch'],
+['itch_swordbird','Swordbird Song','https://birdkissed.itch.io/swordbird-song-the-iron-owl-tower',t('https://birdkissed.itch.io/swordbird-song-the-iron-owl-tower'),null,['RPG','Action','GB'],'rpg','4.5','itch'],
+['itch_yaelon','You Are Elon Musk','https://aliendovecote.itch.io/you-are-elon-musk',t('https://aliendovecote.itch.io/you-are-elon-musk'),'h',['RPG','Satire'],'rpg','4.4','itch'],
+// CoolMath RPG
+['cm_dp',  'Desktop Dungeons',     'https://www.coolmathgames.com/0-desktop-dungeons', t('https://www.coolmathgames.com/0-desktop-dungeons'), 'h',['RPG','Dungeon','Puzzle'],'rpg','4.7','cm'],
+
+// ══════════════════════════════════════════════════════════════
+// HORROR — nova categoria com itch.io
+// ══════════════════════════════════════════════════════════════
+['coffin', 'Coffin of Andy & Leyley','https://kdata1.com/2023/03/the-coffin-of-andy-and-leyley/', t('https://kdata1.com/2023/03/the-coffin-of-andy-and-leyley/'), 'n',['Horror','RPG'],'hor','4.8','itch'],
+['itch_imposquiz','Impostor quiz',  'https://impostor-quiz.itch.io/impostor-quiz', t('https://impostor-quiz.itch.io/impostor-quiz'),      null,['Horror','Party'],'hor','4.3','itch'],
+['ng_exmort','Exmortis',           'https://www.newgrounds.com/portal/view/250842', t('https://www.newgrounds.com/portal/view/250842'),  'h',['Horror','Adventure'],'hor','4.5','ng'],
+['ng_exmort2','Exmortis 2',        'https://www.newgrounds.com/portal/view/384726', t('https://www.newgrounds.com/portal/view/384726'),  'h',['Horror','Adventure'],'hor','4.7','ng'],
+['ng_alice','Alice is Dead',       'https://www.newgrounds.com/portal/view/557139', t('https://www.newgrounds.com/portal/view/557139'),  'h',['Horror','Point-Click'],'hor','4.6','ng'],
+['ng_alice2','Alice is Dead 2',    'https://www.newgrounds.com/portal/view/582337', t('https://www.newgrounds.com/portal/view/582337'),  'h',['Horror','Point-Click'],'hor','4.7','ng'],
+['ng_alice3','Alice is Dead 3',    'https://www.newgrounds.com/portal/view/606595', t('https://www.newgrounds.com/portal/view/606595'),  'h',['Horror','Point-Click'],'hor','4.7','ng'],
+['ng_herofear','Dead Zed',         'https://www.newgrounds.com/portal/view/576393', t('https://www.newgrounds.com/portal/view/576393'),  null,['Horror','Shooter','Zombie'],'hor','4.5','ng'],
+['ng_deadzed2','Dead Zed 2',       'https://www.newgrounds.com/portal/view/627697', t('https://www.newgrounds.com/portal/view/627697'),  null,['Horror','Shooter','Zombie'],'hor','4.6','ng'],
+['itch_analog','Analog Horror Maker','https://analoghorrormaker.itch.io/ahm',     t('https://analoghorrormaker.itch.io/ahm'),            'n',['Horror','Creative'],'hor','4.4','itch'],
+['ng_lurking','The Lurking Horror', 'https://www.newgrounds.com/portal/view/613801',t('https://www.newgrounds.com/portal/view/613801'),   null,['Horror','Text'],'hor','4.3','ng'],
+['ng_lab','Lab of the Dead',       'https://www.newgrounds.com/portal/view/600426', t('https://www.newgrounds.com/portal/view/600426'),  'h',['Horror','Strategy','Zombie'],'hor','4.6','ng'],
+['ng_labotd2','Lab of the Dead 2', 'https://www.newgrounds.com/portal/view/652680', t('https://www.newgrounds.com/portal/view/652680'),  'h',['Horror','Strategy'],'hor','4.7','ng'],
+['itch_analog2','Poppy Playtime Ch1','https://gamejolt.com/games/poppy-playtime/617718',t('https://gamejolt.com/games/poppy-playtime/617718'),'h',['Horror','Puzzle'],'hor','4.7','itch'],
+['itch_fnaf','FNAF Web',           'https://www.gamejolt.com/games/fnaf/260422',   t('https://www.gamejolt.com/games/fnaf/260422'),      'h',['Horror','FNAF'],'hor','4.6','itch'],
+
+// ══════════════════════════════════════════════════════════════
+// AVENTURA — nova categoria com Newgrounds e itch.io
+// ══════════════════════════════════════════════════════════════
+['ng_henry1','Escaping the Prison', 'https://www.newgrounds.com/portal/view/556694',t('https://www.newgrounds.com/portal/view/556694'), 'h',['Aventura','Escolha'],'adv','4.8','ng'],
+['ng_henry2','Stealing the Diamond','https://www.newgrounds.com/portal/view/564525',t('https://www.newgrounds.com/portal/view/564525'), 'h',['Aventura','Escolha'],'adv','4.8','ng'],
+['ng_henry3','Infiltrating the Airship','https://www.newgrounds.com/portal/view/608532',t('https://www.newgrounds.com/portal/view/608532'),'h',['Aventura','Escolha'],'adv','4.9','ng'],
+['ng_henry4','Fleeing the Complex','https://www.newgrounds.com/portal/view/659065', t('https://www.newgrounds.com/portal/view/659065'), 'h',['Aventura','Escolha'],'adv','4.9','ng'],
+['ng_henry0','Breaking the Bank',   'https://www.newgrounds.com/portal/view/463241',t('https://www.newgrounds.com/portal/view/463241'), 'h',['Aventura','Escolha'],'adv','4.7','ng'],
+['ng_depict','Depict1',             'https://www.newgrounds.com/portal/view/560819',t('https://www.newgrounds.com/portal/view/560819'), 'h',['Aventura','Puzzle','Meta'],'adv','4.8','ng'],
+['ng_space','Space is Key',         'https://www.newgrounds.com/portal/view/538659',t('https://www.newgrounds.com/portal/view/538659'), null,['Aventura','Plat'],'adv','4.4','ng'],
+['ng_space2','Space is Key 2',      'https://www.newgrounds.com/portal/view/590716',t('https://www.newgrounds.com/portal/view/590716'), null,['Aventura','Plat'],'adv','4.5','ng'],
+['ng_gretel','Gretel and Hansel',   'https://www.newgrounds.com/portal/view/378182',t('https://www.newgrounds.com/portal/view/378182'), 'h',['Aventura','Point-Click'],'adv','4.6','ng'],
+['ng_gretel2','Gretel and Hansel 2','https://www.newgrounds.com/portal/view/402498',t('https://www.newgrounds.com/portal/view/402498'),'h',['Aventura','Point-Click'],'adv','4.6','ng'],
+['ng_samorost','Samorost',          'https://www.newgrounds.com/portal/view/88744', t('https://www.newgrounds.com/portal/view/88744'),  'h',['Aventura','Point-Click'],'adv','4.7','ng'],
+['ng_comet','A Comet Appears',      'https://www.newgrounds.com/portal/view/612826',t('https://www.newgrounds.com/portal/view/612826'), null,['Aventura','Narrative'],'adv','4.5','ng'],
+['ng_aground','Aground',            'https://www.newgrounds.com/portal/view/717741',t('https://www.newgrounds.com/portal/view/717741'), 'h',['Aventura','RPG','Survival'],'adv','4.7','ng'],
+['ng_noway','No-one Has to Die',    'https://www.newgrounds.com/portal/view/624897',t('https://www.newgrounds.com/portal/view/624897'), 'h',['Aventura','Puzzle','Narrative'],'adv','4.8','ng'],
+['ng_hackmill','Hackmill',          'https://www.newgrounds.com/portal/view/611688',t('https://www.newgrounds.com/portal/view/611688'), null,['Aventura','Puzzle'],'adv','4.4','ng'],
+['itch_spelunky','Spelunky (HTML5)', 'https://spelunky.fandom.com/wiki/Spelunky_(web_version)',t('https://spelunky.fandom.com/wiki/Spelunky_(web_version)'),'t',['Aventura','Roguelike'],'adv','4.9','itch'],
+['itch_oneshot','OneShot Web',      'https://elentori.itch.io/oneshot-web',        t('https://elentori.itch.io/oneshot-web'),            'h',['Aventura','RPG','Narrative'],'adv','4.9','itch'],
+
+// ══════════════════════════════════════════════════════════════
+// FPS & TIRO
+// ══════════════════════════════════════════════════════════════
+['krunker',  'Krunker.io',         'https://krunker.io',                          t('https://krunker.io'),                               'h',['FPS','.io'],'fps','4.8','io'],
+['shell',    'Shell Shockers',     'https://shellshock.io',                       t('https://shellshock.io'),                            't',['FPS','Ovos'],'fps','4.7','io'],
+['venge',    'Venge.io',           'https://venge.io',                            p('a2ddd7d16a599f8f01b65a3bc453e698','venge-io'),        't',['FPS','3D'],'fps','4.6','io'],
+['deadshot', 'Deadshot.io',        'https://deadshot.io',                         t('https://deadshot.io'),                              'h',['FPS','.io'],'fps','4.5','io'],
+['1v1',      '1v1.lol',            'https://1v1.lol',                             t('https://1v1.lol'),                                  'h',['Build','BR'],'fps','4.6','io'],
+['narrow',   'Narrow.One',         'https://narrow.one',                          p('e9f87aed2de11520ecac587ffa98627d','narrow-one'),      't',['Arco','Multi'],'fps','4.8','io'],
+['voxiom',   'Voxiom.io',          'https://voxiom.io',                           t('https://voxiom.io'),                                'n',['FPS','Voxel'],'fps','4.5','io'],
+['kirka',    'Kirka.io',           'https://kirka.io',                            t('https://kirka.io'),                                 'n',['FPS','.io'],'fps','4.4','io'],
+['blockpost','Blockpost',          'https://blockpost.net',                       p('70c2a0deacc4cf2cb86add488199c56e','blockpost'),       'h',['FPS','Voxel'],'fps','4.6','io'],
+['combat2',  'Combat Reloaded 2',  'https://combatreloaded.com',                  p('84ad3def86043b739c7720b3098ae15b','combat-reloaded-2'),'h',['FPS','3D'],'fps','4.6','io'],
+['surviv',   'Surviv.io',          'https://surviv.io',                           t('https://surviv.io'),                                't',['BR','2D'],'fps','4.6','io'],
+['cryzen',   'Cryzen.io',          'https://cryzen.io',                           p('89faa8fcb2d56a8195c041a7cfb7a6a4','cryzen-io','jfif'),'n',['FPS','.io'],'fps','4.4','io'],
+['superhot', 'SuperHot Web',       'https://superhotgame.com/play-superhot-web/', t('https://superhotgame.com'),                         'h',['FPS','Indie'],'fps','4.8','io'],
+['vertix',   'Vertix.io',          'https://vertix.io',                           t('https://vertix.io'),                                null,['FPS','.io'],'fps','4.2','io'],
+['gridpunk', 'Gridpunk',           'https://gridpunk.io',                         t('https://gridpunk.io'),                              't',['BR','Multi'],'fps','4.6','io'],
+['gats',     'Gats.io',            'https://gats.io',                             t('https://gats.io'),                                  null,['FPS','.io'],'fps','4.2','io'],
+['warbrokers','War Brokers',       'https://warbrokers.io',                       t('https://warbrokers.io'),                            null,['FPS','3D'],'fps','4.3','io'],
+// Newgrounds FPS
+['ng_ng_pico','Pico vs Bear',      'https://www.newgrounds.com/portal/view/254',  t('https://www.newgrounds.com/portal/view/254'),        'h',['FPS','Ação','Clássico'],'fps','4.5','ng'],
+['ng_defender','Defender',         'https://www.newgrounds.com/portal/view/574575',t('https://www.newgrounds.com/portal/view/574575'),   null,['FPS','Space'],'fps','4.3','ng'],
+
+// ══════════════════════════════════════════════════════════════
+// AÇÃO
+// ══════════════════════════════════════════════════════════════
+['stickhook','Stickman Hook',      'https://stickmanhook.com',                    p('99e090d154caf30f3625df7e456d5984','stickman-hook'), null,['Ação','Swing'],'aca','4.5','io'],
+['ragdoll',  'Ragdoll Hit',        'https://ragdollhit.com',                      p('3c892779be9dabb3589586c83ad3eeed','ragdoll-hit'), 'n',['Ação','Física'],'aca','4.4','io'],
+['ironsnout','Iron Snout',         'https://ironsnout.com',                       p('b6cbf50f539ae0330a2840e501b91a28','iron-snout'), null,['Ação','Luta'],'aca','4.5','io'],
+['tanki',    'Tanki Online',       'https://tankionline.com',                     t('https://tankionline.com'),                          null,['Ação','Tank'],'aca','4.3','io'],
+['plazma',   'Plazma Burst 2',     'https://plazmaburst2.com',                    t('https://plazmaburst2.com'),                         null,['Ação','Sci-fi'],'aca','4.4','io'],
+['ageofwar', 'Age of War',         'https://ageofwargame.io',                     t('https://ageofwargame.io'),                          null,['Ação','Estratégia'],'aca','4.3','io'],
+// Newgrounds Ação
+['ng_madness1','Madness Combat',   'https://www.newgrounds.com/portal/view/73913',t('https://www.newgrounds.com/portal/view/73913'),     'h',['Ação','Stick','Violência'],'aca','4.7','ng'],
+['ng_madness7','Madness Combat 7', 'https://www.newgrounds.com/portal/view/356291',t('https://www.newgrounds.com/portal/view/356291'),  'h',['Ação','Stick'],'aca','4.8','ng'],
+['ng_madness11','Madness Combat 11','https://www.newgrounds.com/portal/view/742969',t('https://www.newgrounds.com/portal/view/742969'), 'h',['Ação','Stick'],'aca','4.8','ng'],
+['ng_alien', 'Alien Hominid',      'https://www.newgrounds.com/portal/view/59593',t('https://www.newgrounds.com/portal/view/59593'),    'h',['Ação','Clássico'],'aca','4.7','ng'],
+['ng_dad',   'Dad n Me',           'https://www.newgrounds.com/portal/view/251494',t('https://www.newgrounds.com/portal/view/251494'),  'h',['Ação','Beat-up'],'aca','4.7','ng'],
+['ng_tankman','Tankmen',           'https://www.newgrounds.com/portal/view/517117',t('https://www.newgrounds.com/portal/view/517117'),  'h',['Ação','Shooter'],'aca','4.5','ng'],
+['ng_hotbox','Hot Box Rush',       'https://www.newgrounds.com/portal/view/646836',t('https://www.newgrounds.com/portal/view/646836'),  null,['Ação'],'aca','4.3','ng'],
+['ng_boxhead','Boxhead Bounty Hunter','https://www.newgrounds.com/portal/view/408471',t('https://www.newgrounds.com/portal/view/408471'),'h',['Ação','Shooter','Zombie'],'aca','4.6','ng'],
+['ng_boxhead2','Boxhead 2Play Rooms','https://www.newgrounds.com/portal/view/349239',t('https://www.newgrounds.com/portal/view/349239'),'h',['Ação','Shooter','2P'],'aca','4.6','ng'],
+['ng_toss','Toss the Turtle',      'https://www.newgrounds.com/portal/view/555632',t('https://www.newgrounds.com/portal/view/555632'),  'h',['Ação','Casual'],'aca','4.6','ng'],
+['ng_nyan','Achievement Unlocked', 'https://www.newgrounds.com/portal/view/487967',t('https://www.newgrounds.com/portal/view/487967'),  'h',['Ação','Casual','Meta'],'aca','4.6','ng'],
+['ng_mud','Mud & Blood 2',         'https://www.newgrounds.com/portal/view/496951',t('https://www.newgrounds.com/portal/view/496951'),  'h',['Ação','Estratégia'],'aca','4.7','ng'],
+['ng_bubble','Bubble Tanks 2',     'https://www.newgrounds.com/portal/view/462999',t('https://www.newgrounds.com/portal/view/462999'),  null,['Ação','Shooter'],'aca','4.4','ng'],
+['ng_miamishark','Miami Shark',    'https://www.newgrounds.com/portal/view/542871',t('https://www.newgrounds.com/portal/view/542871'),  'h',['Ação','Violência'],'aca','4.5','ng'],
+['ng_robopark','Robot Unicorn Attack','https://www.newgrounds.com/portal/view/516013',t('https://www.newgrounds.com/portal/view/516013'),'h',['Ação','Run'],'aca','4.7','ng'],
+['ng_sift','Sift Heads World',     'https://www.newgrounds.com/portal/view/537426',t('https://www.newgrounds.com/portal/view/537426'),  'h',['Ação','Shooter'],'aca','4.6','ng'],
+
+// ══════════════════════════════════════════════════════════════
+// PLATAFORMA
+// ══════════════════════════════════════════════════════════════
+['slope',   'Slope',               'https://slope.game',                          t('https://slope.game'),                               'h',['Plat','Skill'],'plat','4.6','io'],
+['run3',    'Run 3',               'https://run3game.io',                         t('https://run3game.io'),                              't',['Plat','Endless'],'plat','4.5','io'],
+['geodash', 'Geometry Dash',       'https://geometrydash-lite.com',               t('https://geometrydash-lite.com'),                    'h',['Plat','Ritmo'],'plat','4.6','io'],
+['dinorun', 'Dino Game',           'https://chromedino.com',                      p('9afd3b92ab41ffca7f368a8fcbd6d39a75894efe0edbc14cf1f067cf625e6678','dinosaur-game'),null,['Plat','Casual'],'plat','4.5','io'],
+['redball', 'Red Ball 4',          'https://redball4.io',                         p('9b739087f9938fb143a2519252addbb8','red-ball-4'),      null,['Plat'],'plat','4.4','io'],
+['flappy',  'Flappy Bird',         'https://flappybird.io',                       t('https://flappybird.io'),                            null,['Plat','Casual'],'plat','4.3','io'],
+['snowrider','Snow Rider 3D',      'https://snowrider3d.io',                      t('https://snowrider3d.io'),                           'n',['Plat','3D'],'plat','4.5','io'],
+['ovo',     'OvO',                 'https://www.hoodamath.com/games/ovo.html',    t('https://www.hoodamath.com/games/ovo.html'),          'h',['Plat','Parkour'],'plat','4.6','cm'],
+['vex5',    'Vex 5',               'https://www.hoodamath.com/games/vex5.html',   t('https://www.hoodamath.com/games/vex5.html'),         null,['Plat','Difícil'],'plat','4.5','cm'],
+['levldvl', 'Level Devil',         'https://leveldevil.io',                       p('0c3d1446c6992c2b88a9498de054688b','level-devil'),     'h',['Plat','Casual'],'plat','4.6','io'],
+['dreadhd', 'Dreadhead Parkour',   'https://dreadheadparkour.io',                 p('5f983c03072b3e1997e214130a98a199','dreadhead-parkour'),'n',['Plat','Parkour'],'plat','4.5','io'],
+['templerun','Temple Run 2',       'https://templerun2.io',                       p('b5c8b617f65be7cc4d56dd3657590ae7','temple-run-2'),    'h',['Plat','Run'],'plat','4.5','io'],
+// Newgrounds plataforma
+['ng_fancy2','Fancy Pants World 1','https://www.newgrounds.com/portal/view/418929',t('https://www.newgrounds.com/portal/view/418929'),   'h',['Plat','Clássico'],'plat','4.7','ng'],
+['ng_fancy3','Fancy Pants World 2','https://www.newgrounds.com/portal/view/479375',t('https://www.newgrounds.com/portal/view/479375'),   'h',['Plat','Clássico'],'plat','4.8','ng'],
+['ng_nmini','N - The Way of the Ninja','https://www.newgrounds.com/portal/view/347323',t('https://www.newgrounds.com/portal/view/347323'),'h',['Plat','Difícil'],'plat','4.7','ng'],
+['ng_robouni','Robot Unicorn Attack','https://www.newgrounds.com/portal/view/516013',t('https://www.newgrounds.com/portal/view/516013'), 'h',['Plat','Endless'],'plat','4.7','ng'],
+['ng_supermarios','Super Mario Flash','https://www.newgrounds.com/portal/view/336715',t('https://www.newgrounds.com/portal/view/336715'),'h',['Plat','Mario'],'plat','4.5','ng'],
+['ng_meat','Super Meat Boy (demo)', 'https://www.newgrounds.com/portal/view/547049',t('https://www.newgrounds.com/portal/view/547049'),  'h',['Plat','Difícil'],'plat','4.8','ng'],
+['ng_juan','Juan Punch Man',        'https://www.newgrounds.com/portal/view/631060',t('https://www.newgrounds.com/portal/view/631060'),  null,['Plat','Ação'],'plat','4.4','ng'],
+['ng_pico2','Pico School 2',        'https://www.newgrounds.com/portal/view/98749', t('https://www.newgrounds.com/portal/view/98749'),   'h',['Plat','Clássico'],'plat','4.5','ng'],
+['ng_gravity','Gravity Boy',        'https://www.newgrounds.com/portal/view/401777',t('https://www.newgrounds.com/portal/view/401777'),  null,['Plat','Puzzle'],'plat','4.4','ng'],
+['ng_kiwi','Kiwi! -a platformer-',  'https://www.newgrounds.com/portal/view/505358',t('https://www.newgrounds.com/portal/view/505358'),  null,['Plat'],'plat','4.3','ng'],
+// itch.io plataforma
+['itch_celeste','Celeste Classic',   'https://mattmakesgames.itch.io/celesteclassic',t('https://mattmakesgames.itch.io/celesteclassic'), 'h',['Plat','Difícil'],'plat','4.9','itch'],
+['cm_ovo2','OvO 2',                  'https://www.coolmathgames.com/0-ovo',        t('https://www.coolmathgames.com/0-ovo'),              'h',['Plat','Parkour'],'plat','4.7','cm'],
+['cm_worlds','World\'s Hardest Game','https://worldshardestgame.io',              t('https://worldshardestgame.io'),                     'h',['Plat','Difícil'],'plat','4.5','cm'],
+
+// ══════════════════════════════════════════════════════════════
+// JOGOS .IO
+// ══════════════════════════════════════════════════════════════
+['slither','Slither.io',           'https://slither.io',                          t('https://slither.io'),                               'h',['Snake','.io'],'io','4.5','io'],
+['agar',   'Agar.io',              'https://agar.io',                             t('https://agar.io'),                                  't',['.io'],'io','4.6','io'],
+['paper',  'Paper.io 2',           'https://paper-io.com',                        t('https://paper-io.com'),                             null,['.io'],'io','4.4','io'],
+['diep',   'Diep.io',              'https://diep.io',                             t('https://diep.io'),                                  null,['Tank','.io'],'io','4.3','io'],
+['zombsroy','Zombs Royale',        'https://zombsroyale.io',                      t('https://zombsroyale.io'),                           'h',['BR','.io'],'io','4.4','io'],
+['moomoo', 'MooMoo.io',            'https://moomoo.io',                           t('https://moomoo.io'),                                null,['Survival'],'io','4.2','io'],
+['wings',  'Wings.io',             'https://wings.io',                            t('https://wings.io'),                                 null,['Avião'],'io','4.2','io'],
+['hole',   'Hole.io',              'https://hole.io',                             t('https://hole.io'),                                  'h',['.io'],'io','4.3','io'],
+['yohoho', 'YoHoHo.io',            'https://yohoho.io',                           p('9b373b5219cd66a82389d81d7cda8e23','yohoho-io','jpeg'),'n',['Pirata'],'io','4.5','io'],
+['smashk', 'Smash Karts',          'https://smashkarts.io',                       p('9c9e529b14731be871b07b89660bbc2a','smash-karts'),     'h',['Karts'],'io','4.7','io'],
+['bloxd',  'Bloxd.io',             'https://bloxd.io',                            t('https://bloxd.io'),                                 't',['Voxel'],'io','4.6','io'],
+['taming', 'Taming.io',            'https://taming.io',                           t('https://taming.io'),                                't',['Survival'],'io','4.5','io'],
+['snake',  'Snake.io',             'https://snake.io',                            t('https://snake.io'),                                 null,['Snake'],'io','4.3','io'],
+['ducklings','Ducklings.io',       'https://ducklings.io',                        t('https://ducklings.io'),                             'n',['Cute'],'io','4.4','io'],
+['mope',   'Mope.io',              'https://mope.io',                             t('https://mope.io'),                                  null,['Animals'],'io','4.2','io'],
+['flyordie','FlyOrDie.io',         'https://flyordie.io',                         t('https://flyordie.io'),                              null,['Animals'],'io','4.3','io'],
+['buildr', 'BuildRoyale.io',       'https://buildroyale.io',                      t('https://buildroyale.io'),                           null,['Build'],'io','4.3','io'],
+['starblast','Starblast.io',       'https://starblast.io',                        t('https://starblast.io'),                             null,['Space'],'io','4.3','io'],
+['zombs',  'Zombs.io',             'https://zombs.io',                            t('https://zombs.io'),                                 null,['Tower'],'io','4.3','io'],
+['arras',  'Arras.io',             'https://arras.io',                            t('https://arras.io'),                                 null,['Tank'],'io','4.3','io'],
+['generals','Generals.io',         'https://generals.io',                         t('https://generals.io'),                              'n',['RTS'],'io','4.5','io'],
+['miniblox','Miniblox',            'https://miniblox.io',                         t('https://miniblox.io'),                              'n',['Voxel'],'io','4.4','io'],
+['evowars','EvoWars.io',           'https://evowars.io',                          t('https://evowars.io'),                               'n',['Battle'],'io','4.3','io'],
+['narwhal','Narwhale.io',          'https://narwhale.io',                         t('https://narwhale.io'),                              null,['.io'],'io','4.1','io'],
+['deeeep', 'Deeeep.io',            'https://deeeep.io',                           t('https://deeeep.io'),                                null,['Ocean'],'io','4.2','io'],
+['lordz',  'Lordz.io',             'https://lordz.io',                            t('https://lordz.io'),                                 null,['RTS'],'io','4.2','io'],
+['wormate','Wormate.io',           'https://wormate.io',                          t('https://wormate.io'),                               null,['Snake'],'io','4.2','io'],
+['stabfish','Stabfish 2',          'https://stabfish2.io',                        t('https://stabfish2.io'),                             'n',['.io'],'io','4.4','io'],
+['littlebig','Little Big Snake',   'https://littlebigsnake.com',                  t('https://littlebigsnake.com'),                       null,['Snake'],'io','4.3','io'],
+
+// ══════════════════════════════════════════════════════════════
+// CORRIDA
+// ══════════════════════════════════════════════════════════════
+['motox3m',  'Moto X3M',           'https://moto-x3m.io',                         p('2c6d5a46cdbceada277c870ce1c389ee','moto-x3m','jpg'), 't',['Moto'],'cor','4.7','io'],
+['motox3m2', 'Moto X3M 2',         'https://moto-x3m2.io',                        t('https://moto-x3m2.io'),                             null,['Moto'],'cor','4.6','io'],
+['driftboss','Drift Boss',          'https://driftboss.io',                        p('baf55f009fd63dd63c760a5dcfe79615','drift-boss'),     null,['Drift'],'cor','4.5','io'],
+['drivemad', 'Drive Mad',           'https://drive-mad.com',                       p('4abc77cf2ca8a1ca37416249429501f4','drive-mad'),       'h',['Física'],'cor','4.6','io'],
+['polytrack','PolyTrack',           'https://polytrack.io',                        p('1f03e11a55d301fbaab4408e8ec721e0','polytrack'),       'n',['Corrida'],'cor','4.5','io'],
+['rocketbot','Rocket Bot Royale',   'https://rocketbotroyale.winterpixel.io',      t('https://rocketbotroyale.winterpixel.io'),           'h',['Tank'],'cor','4.5','io'],
+['eggy',     'Eggy Car',            'https://eggycar.io',                          t('https://eggycar.io'),                               'n',['Física'],'cor','4.4','io'],
+['gswitch',  'G-Switch 4',          'https://www.gswitch.co',                      p('7a92daef9c9428fcd560f4dd598a323a','g-switch-4'),     'h',['Multi'],'cor','4.6','io'],
+['drifthunt','Drift Hunters',       'https://drifthunters.io',                     t('https://drifthunters.io'),                          'h',['Drift'],'cor','4.6','io'],
+['stuntbike','Stunt Bike Extreme',  'https://stuntbikeextreme.io',                 p('d115380307564d68096317ffd29cbcf9','stunt-bike-extreme'),null,['Moto'],'cor','4.3','io'],
+['hillclimb','Hill Climb Racing',   'https://hillclimbracinggame.io',              p('b87616bb88c0e3cb4c150c59fdc767fa','hill-climb-racing-lite'),null,['Car'],'cor','4.5','io'],
+['tunnelr',  'Tunnel Rush',         'https://tunnel-rush.com',                     p('2094926076b7aa8264cace220ce5decc','tunnel-rush'),    null,['Skill'],'cor','4.5','io'],
+
+// ══════════════════════════════════════════════════════════════
+// CASUAL & PARTY
+// ══════════════════════════════════════════════════════════════
+['cookie',   'Cookie Clicker',      'https://orteil.dashnet.org/cookieclicker/',   t('https://orteil.dashnet.org/cookieclicker/'),        null,['Idle'],'cas','4.4','io'],
+['skribbl',  'skribbl.io',          'https://skribbl.io',                          t('https://skribbl.io'),                               'm',['Desenho'],'cas','4.7','io'],
+['gartic',   'Gartic Phone',        'https://garticphone.com',                     t('https://garticphone.com'),                          'n',['Party'],'cas','4.8','io'],
+['slicem',   'Slice Master',        'https://slicemaster.io',                      p('743089b5c6b4dda8bd05d920ab00a0b3','slice-master'),   'h',['Skill'],'cas','4.6','io'],
+['retrobwl', 'Retro Bowl',          'https://retrobowl.me',                        p('ee9ca3764ef4289a48a1ebf457ef605441ed1f35a0f2eb12707a70d609e53686','retro-bowl'),'t',[],'cas','4.7','io'],
+['mnkymrt',  'Monkey Mart',         'https://monkeymart.io',                       p('ce4a204b6d2cc99d1879da0b2282b0d8','monkey-mart'),    't',['Idle'],'cas','4.7','io'],
+['neal',     'Neal.fun',            'https://neal.fun',                            t('https://neal.fun'),                                 'n',['Interativo'],'cas','4.5','io'],
+['password', 'The Password Game',   'https://neal.fun/password-game/',             t('https://neal.fun/password-game/'),                  'h',['Viral'],'cas','4.7','io'],
+['infincraft','Infinite Craft',     'https://neal.fun/infinite-craft/',            t('https://neal.fun/infinite-craft/'),                 'h',['Criativo'],'cas','4.8','io'],
+['akinator', 'Akinator',            'https://akinator.com',                        t('https://akinator.com'),                             'h',['Adivinhar'],'cas','4.6','io'],
+['2048',     '2048',                'https://2048.org',                            t('https://2048.org'),                                 null,['Puzzle'],'cas','4.5','io'],
+['tetris',   'Tetris',              'https://tetris.com/play-tetris',              t('https://tetris.com/play-tetris'),                   null,['Clássico'],'cas','4.7','io'],
+['sandsp',   'Sandspiel',           'https://sandspiel.club',                      t('https://sandspiel.club'),                           'n',['Simulação'],'cas','4.6','io'],
+['sketchf',  'Sketchful.io',        'https://sketchful.io',                        t('https://sketchful.io'),                             null,['Desenho'],'cas','4.5','io'],
+['garticb',  'Gartic.io',           'https://gartic.io',                           t('https://gartic.io'),                                null,['Desenho'],'cas','4.4','io'],
+['minesw',   'Minesweeper',         'https://minesweeper.online',                  t('https://minesweeper.online'),                       null,['Clássico'],'cas','4.6','io'],
+['myhotel',  'My Perfect Hotel',    'https://myperfecthotel.io',                   p('f39e22538799cae88cf1a630492c2e7b','my-perfect-hotel'),'n',['Idle'],'cas','4.5','io'],
+['happyw',   'Happy Wheels',        'https://www.totaljerkface.com/happy_wheels.tjf',t('https://www.totaljerkface.com/happy_wheels.tjf'), 'h',['Física'],'cas','4.5','io'],
+['fireboy',  'Fireboy & Watergirl', 'https://www.coolmathgames.com/0-fireboy-and-watergirl-in-the-forest-temple',t('https://www.coolmathgames.com'),'h',['2P','Puzzle'],'cas','4.7','cm'],
+['papas',    "Papa's Burgeria",     'https://papasgames.io/papas-burgeria',        t('https://papasgames.io/papas-burgeria'),             'h',['Gestão'],'cas','4.6','io'],
+['papasf',   "Papa's Freezeria",    'https://papasgames.io/papas-freezeria',       t('https://papasgames.io/papas-freezeria'),            null,['Gestão'],'cas','4.5','io'],
+// Newgrounds casual
+['ng_toss2', 'Toss the Turtle',     'https://www.newgrounds.com/portal/view/555632',t('https://www.newgrounds.com/portal/view/555632'),  'h',['Casual','Distância'],'cas','4.6','ng'],
+['ng_ach',   'Achievement Unlocked','https://www.newgrounds.com/portal/view/487967',t('https://www.newgrounds.com/portal/view/487967'),  'h',['Casual','Meta'],'cas','4.6','ng'],
+['ng_idlerpg','Idle RPG',           'https://www.newgrounds.com/portal/view/730451',t('https://www.newgrounds.com/portal/view/730451'),  null,['Idle','RPG'],'cas','4.3','ng'],
+
+// ══════════════════════════════════════════════════════════════
+// PUZZLE
+// ══════════════════════════════════════════════════════════════
+['chess',   'Chess.com',            'https://www.chess.com/play/computer',         t('https://www.chess.com'),                           't',['Xadrez'],'puz','4.8','io'],
+['lichess', 'Lichess',              'https://lichess.org',                         t('https://lichess.org'),                             't',['Xadrez'],'puz','4.9','io'],
+['sudoku',  'Sudoku.com',           'https://sudoku.com',                          t('https://sudoku.com'),                               null,['Sudoku'],'puz','4.5','io'],
+['mnkytype','MonkeyType',           'https://monkeytype.com',                      t('https://monkeytype.com'),                           't',['Digitação'],'puz','4.8','io'],
+['nitrotype','Nitro Type',          'https://www.nitrotype.com',                   t('https://www.nitrotype.com'),                        'h',['Digitar'],'puz','4.6','io'],
+['kahoot',  'Kahoot!',             'https://kahoot.it',                            t('https://kahoot.it'),                               'h',['Quiz'],'puz','4.7','io'],
+['blooket', 'Blooket',             'https://www.blooket.com',                      t('https://www.blooket.com'),                          'h',['Quiz'],'puz','4.6','io'],
+['gimkit',  'Gimkit',              'https://www.gimkit.com',                       t('https://www.gimkit.com'),                           null,['Quiz'],'puz','4.5','io'],
+['connect', 'Connections NYT',     'https://www.nytimes.com/games/connections',    t('https://www.nytimes.com/games/connections'),        'h',['Palavras'],'puz','4.7','io'],
+['papas2',  "Papa's Games",        'https://papasgames.io',                       t('https://papasgames.io'),                            null,['Gestão'],'puz','4.5','io'],
+['worldhard',"World's Hardest Game",'https://worldshardestgame.io',               t('https://worldshardestgame.io'),                     'h',['Difícil'],'puz','4.5','io'],
+['scratch', 'Scratch',             'https://scratch.mit.edu',                      t('https://scratch.mit.edu'),                          null,['Code'],'puz','4.7','io'],
+// Newgrounds puzzle
+['ng_depict2','Depict1',           'https://www.newgrounds.com/portal/view/560819',t('https://www.newgrounds.com/portal/view/560819'),   'h',['Puzzle','Meta'],'puz','4.8','ng'],
+['ng_noway2','No-one Has to Die',  'https://www.newgrounds.com/portal/view/624897',t('https://www.newgrounds.com/portal/view/624897'),   'h',['Puzzle','Narrativa'],'puz','4.8','ng'],
+['ng_azul',  'Blue',               'https://www.newgrounds.com/portal/view/527473',t('https://www.newgrounds.com/portal/view/527473'),   'h',['Puzzle'],'puz','4.6','ng'],
+['ng_loved', 'Loved',              'https://www.newgrounds.com/portal/view/519023',t('https://www.newgrounds.com/portal/view/519023'),   'h',['Puzzle','Arte'],'puz','4.7','ng'],
+['ng_closure','Closure',           'https://www.newgrounds.com/portal/view/536282',t('https://www.newgrounds.com/portal/view/536282'),   'h',['Puzzle','Plat'],'puz','4.7','ng'],
+['ng_endeavor','Endeavor',         'https://www.newgrounds.com/portal/view/532468',t('https://www.newgrounds.com/portal/view/532468'),   'h',['Puzzle','RPG'],'puz','4.7','ng'],
+// itch.io puzzle
+['itch_stsl','Slay the Spire Demo','https://megacrit.itch.io/slay-the-spire-demo',t('https://megacrit.itch.io/slay-the-spire-demo'),    'h',['Puzzle','Cards','Roguelike'],'puz','4.9','itch'],
+
+// ══════════════════════════════════════════════════════════════
+// ESTRATÉGIA
+// ══════════════════════════════════════════════════════════════
+['lichess2','Lichess',             'https://lichess.org',                          t('https://lichess.org'),                             't',['Xadrez'],'str','4.9','io'],
+['generals2','Generals.io',       'https://generals.io',                           t('https://generals.io'),                             'n',['RTS'],'str','4.5','io'],
+['openfront','OpenFront.io',      'https://openfront.io',                          t('https://openfront.io'),                            'n',['RTS'],'str','4.4','io'],
+['mindustry','Mindustry',         'https://mindustrygame.github.io/mindustry.html',t('https://mindustrygame.github.io'),                 'n',['TD','Factory'],'str','4.6','io'],
+['zombs2',  'Zombs.io',           'https://zombs.io',                              t('https://zombs.io'),                                null,['Tower'],'str','4.3','io'],
+// Newgrounds estratégia
+['ng_gemcraft2','GemCraft Labyrinth','https://www.newgrounds.com/portal/view/563455',t('https://www.newgrounds.com/portal/view/563455'),'h',['TD','Strategy'],'str','4.7','ng'],
+['ng_mud2','Mud & Blood 2',        'https://www.newgrounds.com/portal/view/496951',t('https://www.newgrounds.com/portal/view/496951'),   'h',['Strategy','WW2'],'str','4.7','ng'],
+['ng_infectonator','Infectonator!','https://www.newgrounds.com/portal/view/550426',t('https://www.newgrounds.com/portal/view/550426'),   'h',['Strategy','Zombie'],'str','4.6','ng'],
+['ng_infect2','Infectonator 2',   'https://www.newgrounds.com/portal/view/616929', t('https://www.newgrounds.com/portal/view/616929'),   'h',['Strategy','Zombie'],'str','4.7','ng'],
+['ng_nativewar','Warfare 1917',   'https://www.newgrounds.com/portal/view/501624', t('https://www.newgrounds.com/portal/view/501624'),   'h',['Strategy','WW1'],'str','4.7','ng'],
+['ng_war2','Warfare 1944',        'https://www.newgrounds.com/portal/view/571274', t('https://www.newgrounds.com/portal/view/571274'),   'h',['Strategy','WW2'],'str','4.7','ng'],
+['ng_td','Flash Element TD',      'https://www.newgrounds.com/portal/view/448296', t('https://www.newgrounds.com/portal/view/448296'),   'h',['TD'],'str','4.5','ng'],
+['ng_td2','Element TD 2',         'https://www.newgrounds.com/portal/view/519023', t('https://www.newgrounds.com/portal/view/519023'),   null,['TD'],'str','4.4','ng'],
+['ng_colony','Colony',            'https://www.newgrounds.com/portal/view/503814', t('https://www.newgrounds.com/portal/view/503814'),   'h',['RTS'],'str','4.6','ng'],
+
+// ══════════════════════════════════════════════════════════════
+// 2 JOGADORES
+// ══════════════════════════════════════════════════════════════
+['getaway', 'Getaway Shootout',    'https://getawayshootout.com',                  t('https://getawayshootout.com'),                      'h',['2P','Luta'],'p2','4.6','io'],
+['rooftop', 'Rooftop Snipers',     'https://rooftopsnipers.io',                    t('https://rooftopsnipers.io'),                        null,['2P','Sniper'],'p2','4.5','io'],
+['bstars',  'Basketball Stars',    'https://basketballstars.io',                   t('https://basketballstars.io'),                       null,['2P','Basket'],'p2','4.5','io'],
+['chess2',  'Chess Multiplayer',   'https://www.chess.com/play/online',            t('https://www.chess.com'),                            null,['2P','Xadrez'],'p2','4.8','io'],
+['skribbl2','skribbl.io',          'https://skribbl.io',                           t('https://skribbl.io'),                               'm',['Multi'],'p2','4.7','io'],
+['gswitch2','G-Switch 4',          'https://www.gswitch.co',                       p('7a92daef9c9428fcd560f4dd598a323a','g-switch-4'),     'h',['Multi'],'p2','4.6','io'],
+['fireboy2','Fireboy & Watergirl', 'https://www.coolmathgames.com/0-fireboy-and-watergirl-in-the-forest-temple',t('https://www.coolmathgames.com'),'h',['2P'],'p2','4.7','cm'],
+// Newgrounds 2P
+['ng_box2p','Boxhead 2Play',       'https://www.newgrounds.com/portal/view/349239',t('https://www.newgrounds.com/portal/view/349239'),    'h',['2P','Shooter'],'p2','4.6','ng'],
+['ng_dad2', 'Dad n Me',            'https://www.newgrounds.com/portal/view/251494',t('https://www.newgrounds.com/portal/view/251494'),    'h',['2P','Beat-up'],'p2','4.7','ng'],
+['ng_streetfight','Street Fighter Flash','https://www.newgrounds.com/portal/view/344464',t('https://www.newgrounds.com/portal/view/344464'),'h',['2P','Luta'],'p2','4.5','ng'],
+
+// ══════════════════════════════════════════════════════════════
+// PALAVRAS & TRIVIA
+// ══════════════════════════════════════════════════════════════
+['wordle',  'Wordle',              'https://www.nytimes.com/games/wordle',          t('https://www.nytimes.com/games/wordle'),             'h',['Palavras'],'pal','4.7','io'],
+['wordleunl','Wordle Ilimitado',   'https://wordleunlimited.org',                   t('https://wordleunlimited.org'),                      'n',['Palavras'],'pal','4.6','io'],
+['quordle', 'Quordle',             'https://quordlegame.com',                       t('https://quordlegame.com'),                          null,['Palavras'],'pal','4.4','io'],
+['nerdle',  'Nerdle',              'https://nerdlegame.com',                        t('https://nerdlegame.com'),                           null,['Math'],'pal','4.5','io'],
+['heardle', 'Heardle',             'https://www.heardle.app',                       t('https://www.heardle.app'),                          null,['Música'],'pal','4.4','io'],
+['framed',  'Framed',              'https://framed.wtf',                            t('https://framed.wtf'),                               null,['Filmes'],'pal','4.5','io'],
+['gamedle', 'Gamedle',             'https://www.gamedle.wtf',                       t('https://www.gamedle.wtf'),                          'n',['Games'],'pal','4.5','io'],
+['waffle',  'Waffle',              'https://wafflegame.net',                        t('https://wafflegame.net'),                           null,['Palavras'],'pal','4.4','io'],
+['sporcle', 'Sporcle',             'https://www.sporcle.com',                       t('https://www.sporcle.com'),                          null,['Trivia'],'pal','4.5','io'],
+['impquiz', 'Impossible Quiz',     'https://theimpossiblequiz.io',                  t('https://theimpossiblequiz.io'),                     'h',['Tricky'],'pal','4.6','io'],
+
+// ══════════════════════════════════════════════════════════════
+// GEOGRAFIA
+// ══════════════════════════════════════════════════════════════
+['worldle', 'Worldle',             'https://worldle.teuteuf.fr',                    t('https://worldle.teuteuf.fr'),                      null,['Países'],'geo','4.5','io'],
+['seterra', 'Seterra',             'https://www.seterra.com',                       t('https://www.seterra.com'),                          't',['Mapas'],'geo','4.6','io'],
+['geoguessr','GeoGuessr',          'https://www.geoguessr.com',                     t('https://www.geoguessr.com'),                        't',['Geo'],'geo','4.8','io'],
+['flagle',  'Flagle',              'https://flagle.io',                             t('https://flagle.io'),                                null,['Bandeiras'],'geo','4.5','io'],
+['countryle','Countryle',          'https://countryle.com',                         t('https://countryle.com'),                            null,['Países'],'geo','4.3','io'],
+['travle',  'Travle',              'https://travle.earth',                          t('https://travle.earth'),                             'n',['Rota'],'geo','4.5','io'],
+['globle',  'Globle',              'https://globle-game.com',                       t('https://globle-game.com'),                          null,['Quiz'],'geo','4.5','io'],
+
+// ══════════════════════════════════════════════════════════════
+// ESPORTES
+// ══════════════════════════════════════════════════════════════
+['bstarse', 'Basketball Stars',    'https://basketballstars.io',                   t('https://basketballstars.io'),                       null,['Basket'],'esp','4.5','io'],
+['retrobwle','Retro Bowl',         'https://retrobowl.me',                         t('https://retrobowl.me'),                             't',['Futebol Amer.'],'esp','4.7','io'],
+['8ball',   '8 Ball Pool',         'https://www.8balltournament.com',              t('https://www.8balltournament.com'),                   'h',['Sinuca'],'esp','4.5','io'],
+['miniputt','Mini Golf',           'https://www.miniputtgame.com',                 t('https://www.miniputtgame.com'),                      null,['Golf'],'esp','4.2','io'],
+
+// ══════════════════════════════════════════════════════════════
+// RITMO
+// ══════════════════════════════════════════════════════════════
+['fnf',      'Friday Night Funkin\'','https://fridaynightfunkin.io',               p('0cd0c8bc4dc15c069dba7ccfb6809f6d','friday-night-funkin'),'h',['Ritmo'],'rit','4.7','io'],
+['geodash2', 'Geometry Dash',       'https://geometrydash-lite.com',               t('https://geometrydash-lite.com'),                    'h',['Ritmo'],'rit','4.6','io'],
+['incredibox','Incredibox',         'https://www.incredibox.com/demo/',             t('https://www.incredibox.com/demo/'),                 'h',['Música'],'rit','4.7','io'],
+// Newgrounds ritmo
+['ng_audiosurf','Guitar Flash',     'https://www.newgrounds.com/portal/view/449744',t('https://www.newgrounds.com/portal/view/449744'),   'h',['Ritmo','Guitarra'],'rit','4.6','ng'],
+['ng_osu','osu! (demo)',             'https://osu.ppy.sh/home',                    t('https://osu.ppy.sh'),                               'h',['Ritmo','Skill'],'rit','4.9','io'],
+
+// ══════════════════════════════════════════════════════════════
+// IDLE / CLICKER
+// ══════════════════════════════════════════════════════════════
+['cookie2','Cookie Clicker',        'https://orteil.dashnet.org/cookieclicker/',   t('https://orteil.dashnet.org/cookieclicker/'),        't',['Idle','Clicker'],'idle','4.7','io'],
+['monkeymart2','Monkey Mart',       'https://monkeymart.io',                       p('ce4a204b6d2cc99d1879da0b2282b0d8','monkey-mart'),    'h',['Idle','Gestão'],'idle','4.7','io'],
+['myhotel2','My Perfect Hotel',     'https://myperfecthotel.io',                   p('f39e22538799cae88cf1a630492c2e7b','my-perfect-hotel'),'n',['Idle'],'idle','4.5','io'],
+['neal2',   'Infinite Craft',       'https://neal.fun/infinite-craft/',            t('https://neal.fun/infinite-craft/'),                 'h',['Idle','Criativo'],'idle','4.8','io'],
+['itch_mobs2','MOBS INC',           'https://torahhorse.itch.io/mobsinc',          t('https://torahhorse.itch.io/mobsinc'),               'n',['Idle','RPG'],'idle','4.6','itch'],
+// Newgrounds idle
+['ng_idle',  'Idle Blacksmith',     'https://www.newgrounds.com/portal/view/698547',t('https://www.newgrounds.com/portal/view/698547'),   null,['Idle'],'idle','4.3','ng'],
+['ng_cookie2','Cookie Crush',       'https://www.newgrounds.com/portal/view/630001',t('https://www.newgrounds.com/portal/view/630001'),   null,['Idle','Casual'],'idle','4.2','ng'],
+
+// ══════════════════════════════════════════════════════════════
+// NOVOS — DOS SITES DO SEU HISTÓRICO DO CHROME
+// ══════════════════════════════════════════════════════════════
+
+// ── EAGLERCRAFT — Minecraft no navegador (funciona no Chromebook!)
+['eagler18',  'Eaglercraft 1.8.8',   'https://eaglercraft.com/mc/1.8.8/',                t('https://eaglercraft.com/mc/1.8.8/'),               'h',['Minecraft','Survival','Multi'],'cas','4.9','io'],
+['eagler152', 'Eaglercraft 1.5.2',   'https://eaglercraft.com/mc/1.5.2/',                t('https://eaglercraft.com/mc/1.5.2/'),               null,['Minecraft','Classic'],'cas','4.7','io'],
+['eaglerdev', 'EaglerCraft.dev',     'https://eaglercraft.dev/',                         t('https://eaglercraft.dev/'),                        'n',['Minecraft','Browser'],'cas','4.8','io'],
+['eaglymcjs', 'EaglyMC 1.20 JS',    'https://eaglercraft.dev/clients/EaglyMC%201.20%20JS/', t('https://eaglercraft.dev/'),                   'n',['Minecraft','1.20'],'cas','4.7','io'],
+
+// ── POXEL.IO — FPS .io
+['poxelio',   'Poxel.io',           'https://poxel.io',                                  t('https://poxel.io'),                                'n',['FPS','.io','Voxel'],'fps','4.5','io'],
+
+// ── GTA SAN ANDREAS no navegador (ZapGames)
+['gtasa',     'GTA San Andreas Web', 'https://zapgames.io/gta-san-andreas',               t('https://zapgames.io/gta-san-andreas'),              'h',['Ação','GTA','Open World'],'aca','4.6','io'],
+
+// ── VC-SKY — jogo de aviação
+['vcsky',     'VC-Sky',             'https://www.vcsky.net',                              t('https://www.vcsky.net'),                           'n',['Simulação','Avião'],'cas','4.4','io'],
+
+// ── BROOKHAVEN no navegador (AllWebGames)
+['brookhaven','Brookhaven',         'https://www.allwebgames.com/game/brookhaven',        t('https://www.allwebgames.com/game/brookhaven'),      'h',['Roblox','Social','Open World'],'cas','4.5','io'],
+
+// ── RETROGAMES.CC — emulador browser
+['retrogbfire','Contra (NES)',       'https://www.retrogames.cc/nes-games/contra.html',   t('https://www.retrogames.cc/nes-games/contra.html'), null,['Retro','NES','Ação'],'ret','4.5','io'],
+['retrogbsm', 'Super Mario Bros',   'https://www.retrogames.cc/nes-games/super-mario-bros.html', t('https://www.retrogames.cc/nes-games/super-mario-bros.html'),'h',['Retro','NES','Plat'],'ret','4.8','io'],
+['retrogbmk', 'Mortal Kombat',      'https://www.retrogames.cc/snes-games/mortal-kombat.html', t('https://www.retrogames.cc/snes-games/mortal-kombat.html'),'h',['Retro','SNES','Luta'],'ret','4.7','io'],
+['retrogbsonic','Sonic the Hedgehog','https://www.retrogames.cc/genesis-games/sonic-the-hedgehog.html',t('https://www.retrogames.cc/genesis-games/sonic-the-hedgehog.html'),'h',['Retro','Sega','Plat'],'ret','4.8','io'],
+['retrogbpkmn','Pokemon Red',        'https://www.retrogames.cc/gameboy-games/pokemon-red-version.html',t('https://www.retrogames.cc/gameboy-games/pokemon-red-version.html'),'h',['Retro','GBC','RPG'],'ret','4.9','io'],
+['retrogbzelda','Zelda',            'https://www.retrogames.cc/nes-games/the-legend-of-zelda.html',t('https://www.retrogames.cc/nes-games/the-legend-of-zelda.html'),'h',['Retro','NES','RPG'],'ret','4.8','io'],
+['retrogbmgm','Megaman',            'https://www.retrogames.cc/nes-games/mega-man.html',  t('https://www.retrogames.cc/nes-games/mega-man.html'),'h',['Retro','NES','Plat'],'ret','4.7','io'],
+['retrogbsfight','Street Fighter 2', 'https://www.retrogames.cc/snes-games/street-fighter-ii-turbo-hyper-fighting.html',t('https://www.retrogames.cc/snes-games/street-fighter-ii-turbo-hyper-fighting.html'),'h',['Retro','SNES','Luta'],'ret','4.8','io'],
+['retrogbtkn', 'Tekken 3',          'https://www.retrogames.cc/psx-games/tekken-3.html', t('https://www.retrogames.cc/psx-games/tekken-3.html'),'h',['Retro','PSX','Luta'],'ret','4.8','io'],
+['retrogbgta', 'GTA 1',             'https://www.retrogames.cc/pc-games/grand-theft-auto.html',t('https://www.retrogames.cc/pc-games/grand-theft-auto.html'),null,['Retro','GTA'],'ret','4.5','io'],
+['retrogbff7', 'Final Fantasy VII',  'https://www.retrogames.cc/psx-games/final-fantasy-vii-disc-1.html',t('https://www.retrogames.cc/psx-games/final-fantasy-vii-disc-1.html'),'h',['Retro','PSX','RPG'],'ret','4.9','io'],
+['retrogbdk',  'Donkey Kong',        'https://www.retrogames.cc/nes-games/donkey-kong.html',t('https://www.retrogames.cc/nes-games/donkey-kong.html'),null,['Retro','NES','Plat'],'ret','4.6','io'],
+['retrogbpac', 'Pac-Man',           'https://www.retrogames.cc/arcade-games/pac-man.html',t('https://www.retrogames.cc/arcade-games/pac-man.html'),'h',['Retro','Arcade'],'ret','4.7','io'],
+['retrogbgb',  'Tetris (Game Boy)',  'https://www.retrogames.cc/gameboy-games/tetris.html',t('https://www.retrogames.cc/gameboy-games/tetris.html'),null,['Retro','GBC','Puzzle'],'ret','4.8','io'],
+
+// ── FNAF GAMES
+['fnafmain',  'FNAF 1',             'https://www.gamejolt.com/games/fnaf/260422',         t('https://www.gamejolt.com/games/fnaf/260422'),      'h',['Horror','FNAF'],'hor','4.8','io'],
+['fnaf2g',    'FNAF 2',             'https://www.gamejolt.com/games/fnaf2/261083',        t('https://www.gamejolt.com/games/fnaf2/261083'),     'h',['Horror','FNAF'],'hor','4.8','io'],
+['fnaf3g',    'FNAF 3',             'https://www.gamejolt.com/games/fnaf3/291809',        t('https://www.gamejolt.com/games/fnaf3/291809'),     'h',['Horror','FNAF'],'hor','4.8','io'],
+['fnaf4g',    'FNAF 4',             'https://www.gamejolt.com/games/fn-af-4/290334',      t('https://www.gamejolt.com/games/fn-af-4/290334'),   'h',['Horror','FNAF'],'hor','4.8','io'],
+
+// ── GAMEPIX.COM — plataforma com centenas de jogos HTML5
+['gpx_slope', 'Slope (GamePix)',    'https://www.gamepix.com/play/slope',                 t('https://www.gamepix.com/play/slope'),              null,['Skill','3D'],'plat','4.6','io'],
+['gpx_subway','Subway Surf (GP)',   'https://www.gamepix.com/play/subway-surfers',         t('https://www.gamepix.com/play/subway-surfers'),     null,['Run','Endless'],'plat','4.5','io'],
+['gpx_minecraft','Minecraft (GP)', 'https://www.gamepix.com/play/minecraft-classic',      t('https://www.gamepix.com/play/minecraft-classic'),  null,['Voxel','Sandbox'],'cas','4.6','io'],
+
+// ── KIZ10.COM — jogos HTML5 escola-friendly
+['kiz_among', 'Among Us Online',   'https://kiz10.com/among-us-online/',                  t('https://kiz10.com/among-us-online/'),              'h',['Party','Social'],'cas','4.5','io'],
+['kiz_fnf',   'FNF (Kiz10)',       'https://kiz10.com/friday-night-funkin/',               t('https://kiz10.com/friday-night-funkin/'),           null,['Ritmo'],'rit','4.5','io'],
+['kiz_slope', 'Slope (Kiz10)',     'https://kiz10.com/slope/',                             t('https://kiz10.com/slope/'),                        null,['Skill'],'plat','4.5','io'],
+
+// ── AGAME.COM
+['agame_bmx', 'BMX Master',        'https://www.agame.com/game/bmx-master',               t('https://www.agame.com/game/bmx-master'),           null,['Bicicleta','Stunt'],'cor','4.3','io'],
+['agame_pool','8 Ball Pool (AG)',   'https://www.agame.com/game/8-ball-billiards-classic', t('https://www.agame.com/game/8-ball-billiards-classic'),null,['Sinuca'],'esp','4.4','io'],
+['agame_farm','Farming Simulator',  'https://www.agame.com/game/farming-simulator-20',    t('https://www.agame.com/game/farming-simulator-20'), null,['Fazenda','Simulação'],'idle','4.3','io'],
+
+// ── ARKADIUM.COM — jogos clássicos
+['ark_solitaire','Solitaire',       'https://www.arkadium.com/games/solitaire/',           t('https://www.arkadium.com/games/solitaire/'),       null,['Cartas','Clássico'],'cas','4.5','io'],
+['ark_mahjong','Mahjong',           'https://www.arkadium.com/games/mahjong/',             t('https://www.arkadium.com/games/mahjong/'),          null,['Puzzle','Clássico'],'puz','4.4','io'],
+['ark_crossword','Crossword Daily', 'https://www.arkadium.com/games/daily-crossword/',     t('https://www.arkadium.com/games/daily-crossword/'), null,['Palavras','Puzzle'],'pal','4.5','io'],
+['ark_bubbles','Bubble Shooter',    'https://www.arkadium.com/games/bubble-shooter/',      t('https://www.arkadium.com/games/bubble-shooter/'),  null,['Casual','Puzzle'],'cas','4.4','io'],
+
+// ── 99 NIGHTS IN THE FOREST (itch.io)
+['itch_99nights','99 Nights in the Forest','https://kindredgames.itch.io/99-nights-in-the-forest',t('https://kindredgames.itch.io/99-nights-in-the-forest'),'n',['Horror','Aventura','Indie'],'hor','4.7','itch'],
+
+// ── GROW A GARDEN (Roblox web)
+['growagrdn',  'Grow a Garden',     'https://www.roblox.com/games/126884695634/Grow-a-Garden',t('https://www.roblox.com/games/126884695634/Grow-a-Garden'),'h',['Roblox','Casual','Garden'],'idle','4.7','io'],
+
+// ── ROB A BRAINROT
+['robabrain', 'Rob A Brainrot',    'https://robabrain.com',                                t('https://robabrain.com'),                           'n',['Brainrot','Ação','Casual'],'aca','4.5','io'],
+
+// ── UNBLOCKED GAMES
+['ub77_btd5', 'Bloons TD 5',       'https://www.unblocked77.com/games/bloons-tower-defense-5/',t('https://www.unblocked77.com/games/bloons-tower-defense-5/'),'h',['TD','Tower','Balloon'],'str','4.8','io'],
+['ub77_shell','Shell Shockers (UB)','https://www.unblocked77.com/games/shellshockers/',   t('https://www.unblocked77.com/games/shellshockers/'), null,['FPS'],'fps','4.6','io'],
+
+// ── TERRARIA ONLINE
+['terraria_on','Terraria Online',   'https://www.retrogames.cc/misc-games/terraria.html', t('https://www.retrogames.cc/misc-games/terraria.html'),'h',['Sandbox','Aventura','RPG'],'adv','4.9','io'],
+
+// ── PLAYHOP — jogos diretos
+['playhop_slope','Slope (PlayHop)', 'https://playhop.com/game/slope',                     t('https://playhop.com/game/slope'),                  null,['Skill','3D'],'plat','4.6','io'],
+['playhop_krun', 'Krunker (PH)',    'https://playhop.com/game/krunker-io',                 t('https://playhop.com/game/krunker-io'),              null,['FPS'],'fps','4.7','io'],
+];
+
+// Dedup por URL
+var seen={};G=G.filter(function(g){if(seen[g[2]])return false;seen[g[2]]=true;return true;});
+
+// Labels de fonte para o badge no card
+var SRC_LABELS={'ng':'NG','itch':'IT','cm':'CM','io':''};
+var SRC_CLS={'ng':'sng','itch':'sit','cm':'scm','io':'sio'};
+
+document.getElementById('totBx').textContent=G.length;
+document.getElementById('hTot').textContent=G.length+'+';
+
+var SECS=[
+  {k:'rpg',  l:'🗡️ RPG',                  c:'#fb923c'},
+  {k:'hor',  l:'👻 Horror',               c:'#9333ea'},
+  {k:'adv',  l:'🗺️ Aventura & Narrativa', c:'#22d3ee'},
+  {k:'fps',  l:'🔫 FPS & Tiro',           c:'var(--red)'},
+  {k:'aca',  l:'⚔️ Ação',                c:'var(--pur)'},
+  {k:'plat', l:'🏃 Plataforma',           c:'#38bdf8'},
+  {k:'io',   l:'🌐 Jogos .io',            c:'var(--cyan)'},
+  {k:'cor',  l:'🏎️ Corrida',             c:'var(--amb)'},
+  {k:'cas',  l:'🎲 Casual & Party',       c:'var(--grn)'},
+  {k:'puz',  l:'🧩 Puzzle & Cérebro',    c:'var(--blue)'},
+  {k:'str',  l:'♟️ Estratégia',           c:'#a78bfa'},
+  {k:'p2',   l:'👥 2 Jogadores',          c:'var(--pink)'},
+  {k:'pal',  l:'📝 Palavras & Trivia',    c:'#38bdf8'},
+  {k:'geo',  l:'🌍 Geografia',            c:'#34d399'},
+  {k:'esp',  l:'⚽ Esportes',             c:'#4ade80'},
+  {k:'rit',  l:'🎵 Ritmo & Música',       c:'#e879f9'},
+  {k:'idle', l:'💰 Idle & Clicker',       c:'#fbbf24'},
+  {k:'ret',  l:'👾 Retro Clássicos',      c:'#a3e635'},
+];
+
+var BAD={h:{c:'bh',l:'🔥'},n:{c:'bn',l:'✨'},t:{c:'bt',l:'🏆'},m:{c:'bm',l:'👥'}};
+
+// Filtros de fonte
+var SRC_FILTERS={'src_ng':'ng','src_itch':'itch','src_cm':'cm','src_io':'io'};
+
+// Favs
+var favs=[];try{favs=JSON.parse(localStorage.getItem('gz')||'[]');}catch(e){}
+function saveFavs(){try{localStorage.setItem('gz',JSON.stringify(favs));}catch(e){}document.getElementById('favBx').textContent=favs.length;}
+saveFavs();
+function toggleFav(id,el,ev){ev.preventDefault();ev.stopPropagation();var i=favs.indexOf(id);if(i===-1){favs.push(id);el.textContent='♥';el.classList.add('on');}else{favs.splice(i,1);el.textContent='♡';el.classList.remove('on');}saveFavs();}
+
+function buildCard(g){
+  var id=g[0],title=g[1],url=g[2],img=g[3],badge=g[4],tags=g[5],r=g[7],src=g[8];
+  var bdg=badge&&BAD[badge]?'<span class="bdg '+BAD[badge].c+'">'+BAD[badge].l+'</span>':'';
+  var tgH=tags.map(function(x){return '<span class="tg">'+x+'</span>';}).join('');
+  var isFav=favs.indexOf(id)!==-1;
+  var fb=t(url);
+  var srcBadge=SRC_LABELS[src]?'<span class="src '+SRC_CLS[src]+'">'+SRC_LABELS[src]+'</span>':'';
+  return '<a class="gc" href="'+url+'" target="_blank" rel="noopener">'
+    +'<div class="gt"><img class="gi" src="'+img+'" alt="'+title+'" loading="lazy" data-fb="'+fb+'" onerror="imgFail(this)">'
+    +bdg+srcBadge
+    +'<div class="fv'+(isFav?' on':'')+'" onclick="toggleFav(\''+id+'\',this,event)">'+(isFav?'♥':'♡')+'</div>'
+    +'<div class="pov"><button class="pb">▶ Jogar</button></div></div>'
+    +'<div class="cb"><div class="ct">'+title+'</div>'
+    +'<div class="cm"><div class="tgs">'+tgH+'</div><div class="cr">⭐ '+r+'</div></div>'
+    +'</div></a>';
+}
+
+var curC='all',curQ='';
+
+function render(list){
+  var bs={};SECS.forEach(function(s){bs[s.k]=[];});bs.fav=[];
+  Object.keys(SRC_FILTERS).forEach(function(k){bs[k]=[];});
+  list.forEach(function(g){
+    if(bs[g[6]])bs[g[6]].push(g);
+    if(favs.indexOf(g[0])!==-1)bs.fav.push(g);
+    var sk='src_'+g[8];if(bs[sk])bs[sk].push(g);
+  });
+
+  // Fav view
+  if(curC==='fav'){
+    var fl=bs.fav;
+    document.getElementById('gameGrid').innerHTML=fl.length
+      ?'<div class="sec"><div class="sh"><div class="st"><span class="bar" style="background:var(--red)"></span>❤️ Favoritos</div><span class="cnt">'+fl.length+'</span></div><div class="grid">'+fl.map(buildCard).join('')+'</div></div>'
+      :'<div class="empty"><div style="font-size:40px">❤️</div><br>Clique no ♡ de qualquer jogo!</div>';
+    return;
+  }
+  // Source filter view
+  if(SRC_FILTERS[curC]){
+    var fl2=bs[curC]||[];
+    var sl={src_ng:'🟠 Newgrounds',src_itch:'🔴 itch.io',src_cm:'🟢 CoolMathGames',src_io:'🔵 Sites .io'};
+    document.getElementById('gameGrid').innerHTML=fl2.length
+      ?'<div class="sec"><div class="sh"><div class="st">'+sl[curC]+'</div><span class="cnt">'+fl2.length+' jogos</span></div><div class="grid">'+fl2.map(buildCard).join('')+'</div></div>'
+      :'<div class="empty">Nenhum jogo nesta fonte</div>';
+    return;
+  }
+  var order=curC==='all'?SECS.map(function(s){return s.k;}):[curC];
+  var html='';
+  order.forEach(function(k){
+    var s=SECS.find(function(x){return x.k===k;});
+    if(!s||!bs[k]||!bs[k].length)return;
+    html+='<div class="sec"><div class="sh"><div class="st"><span class="bar" style="background:'+s.c+';box-shadow:0 0 8px '+s.c+'40"></span>'+s.l+'</div><span class="cnt">'+bs[k].length+' jogos</span></div><div class="grid">'+bs[k].map(buildCard).join('')+'</div></div>';
+  });
+  if(!html)html='<div class="empty"><div style="font-size:40px">🔍</div><br>Nada para "<strong>'+curQ+'</strong>"</div>';
+  document.getElementById('gameGrid').innerHTML=html;
+}
+
+function setUI(c){
+  document.querySelectorAll('.chip').forEach(function(x){x.classList.toggle('on',x.dataset.c===c);});
+  document.querySelectorAll('.sb-a').forEach(function(x){x.classList.toggle('on',x.dataset.c===c);});
+}
+
+function fc(el){
+  var c=typeof el==='string'?el:el.dataset.c;
+  curC=c;setUI(c);
+  render(G.filter(function(g){
+    var okC=c==='all'||c==='fav'||SRC_FILTERS[c]||g[6]===c;
+    var okQ=!curQ||g[1].toLowerCase().includes(curQ)||g[5].join(' ').toLowerCase().includes(curQ);
+    return okC&&okQ;
+  }));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('cbar').addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)fc(c.dataset.c);});
+document.getElementById('q').addEventListener('input',function(){
+  curQ=this.value.toLowerCase().trim();
+  if(curQ&&curC!=='fav'&&!SRC_FILTERS[curC]){curC='all';setUI('all');}
+  fc(curC);
+});
+
+render(G);
+</script>
+</body>
+</html>
